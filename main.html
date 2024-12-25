@@ -36,17 +36,34 @@
 
     <script>
       //Your code goes here
-      let items = document.querySelectorAll(".item");
+      let items = document.querySelector(".items");
 
-      items.forEach((item) => {
-        item.draggable = true;
-        item.addEventListener("dragstart", (e) => {
-          console.log("drag start");
-        });
+      let isDown = false;
+      let startX;
+      let scrollLeft;
 
-        item.addEventListener("dragend", (e) => {
-          console.log("drag end");
-        });
+      items.addEventListener("mousedown", (e) => {
+        items.classList.add("active");
+        isDown = true;
+        startX = e.pageX;
+        scrollLeft = items.scrollLeft;
+
+        if (items.style.cursor == "grab") {
+          items.style.cursor = "grabbing";
+        }
+      });
+      items.addEventListener("mouseup", (e) => {
+        isDown = false;
+        items.classList.remove("active");
+        items.style.cursor = "grab";
+      });
+
+      items.addEventListener("mousemove", (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - items.offsetLeft;
+        const walk = (x - startX) * 2; // Adjust the multiplier for sensitivity
+        items.scrollLeft = scrollLeft - walk;
       });
     </script>
   </body>
